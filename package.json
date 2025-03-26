@@ -1,9 +1,12 @@
 {
     "type": "module",
-    "dependencies": {},
+    "dependencies": {
+        "express": "^4.21.2"
+    },
     "devDependencies": {
         "@eslint/js": "^9.22.0",
         "@types/bun": "^1.2.0",
+        "@types/express": "^5.0.1",
         "@types/node": "^22.10.10",
         "eslint": "^9.22.0",
         "eslint-plugin-prettier": "^5.2.3",
@@ -14,6 +17,7 @@
     "scripts": {
         "start": "bun run src/main.ts",
         "lint": "eslint . --ext .ts",
-        "format": "prettier --write ."
+        "format": "prettier --write .",
+        "dev": "bun --watch src/main.ts"
     }
 }
