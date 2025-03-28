@@ -1,2 +1,4 @@
-import { helloWorld } from "lib/example";
-console.log(helloWorld());
+import App from "./app";
+
+const app = App.getInstance();
+app.listen();
