@@ -1,5 +1,9 @@
 /** 3P Package */
-import { createClient, SupabaseClient } from "@supabase/supabase-js";
+import {
+    createClient,
+    PostgrestError,
+    SupabaseClient,
+} from "@supabase/supabase-js";
 import dotenv from "dotenv";
 
 // Database Table Names
@@ -12,7 +16,7 @@ export const USER_COLUMNS = {
     ID: "id",
     NAME: "name",
     EMAIL: "email",
-    PASSWORD: "password",
+    VERIFIED: "verified",
     CREATED_AT: "created_at",
 } as const;
 
@@ -23,7 +27,7 @@ interface User {
     [USER_COLUMNS.ID]?: string;
     [USER_COLUMNS.NAME]: string;
     [USER_COLUMNS.EMAIL]: string;
-    [USER_COLUMNS.PASSWORD]: string;
+    [USER_COLUMNS.VERIFIED]: boolean;
     [USER_COLUMNS.CREATED_AT]?: Date;
 }
 
@@ -56,6 +60,7 @@ class DatabaseService {
             const { data, error } = await this.supabase
                 .from(DB_TABLES.USERS)
                 .insert([userData])
+                .select()
                 .single();
 
             if (error) throw error;
@@ -65,7 +70,9 @@ class DatabaseService {
         }
     }
 
-    async getUserByEmail(email: string) {
+    async getUserByEmail(
+        email: string,
+    ): Promise<{ data: User | null; error: PostgrestError | null }> {
         try {
             const { data, error } = await this.supabase
                 .from(DB_TABLES.USERS)
@@ -76,7 +83,7 @@ class DatabaseService {
             if (error) throw error;
             return { data, error: null };
         } catch (error) {
-            return { data: null, error };
+            return { data: null, error: error as PostgrestError };
         }
     }
 
@@ -106,6 +113,7 @@ class DatabaseService {
             if (error) throw error;
             return { data, error: null };
         } catch (error) {
+            console.error("Update user error:", error);
             return { data: null, error };
         }
     }
@@ -122,6 +130,9 @@ class DatabaseService {
         } catch (error) {
             return { data: null, error };
         }
+    }
+    getClient() {
+        return this.supabase;
     }
 }
 
