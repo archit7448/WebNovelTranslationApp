@@ -1,4 +1,5 @@
-import express, { Router } from "express";
+import { Router } from "express";
+import { authservice } from "src/services/auth";
 
 class AuthRoutes {
     private static instance: AuthRoutes | null;
@@ -16,14 +17,13 @@ class AuthRoutes {
     }
 
     private initializeRoutes(): void {
-        this.router.post("/login", (_, res: express.Response) => {
-            console.log("Request on Login route");
-            res.send("Logged in");
-        });
-        this.router.post("/register", (_, res: express.Response) => {
-            console.log("Request on register route");
-            res.send("Registered in");
-        });
+        this.router.post("/login", authservice.login);
+        this.router.get("/verify", authservice.verify);
+        this.router.post("/register", authservice.register);
+        this.router.post(
+            "/resend-verification",
+            authservice.resendVerificationEmail,
+        );
     }
     public getRouter() {
         return this.router;
